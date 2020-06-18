@@ -20,6 +20,11 @@ class test_File_Checker(unittest.TestCase):
         os.remove(full_file_path)
 
 
+    def test_fluent_interface_set_file(self):
+        file_checker = self.file_checker.set_file('any_non_existing_file')
+        self.assertTrue(isinstance(file_checker, File_Checker))
+
+
     def create_stub_file_in_tmp_directory(self, file_name):
         temporary_folder = tempfile.gettempdir()
         full_file_path = os.path.join(temporary_folder, file_name)

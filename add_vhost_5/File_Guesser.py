@@ -1,5 +1,4 @@
 from add_vhost_5.File_Guesser_Interface import File_Guesser_Interface
-from add_vhost_5.Windows_File_Guesser import Windows_File_Guesser
 from add_vhost_5.Os_Definition_Exception import Os_Definition_Exception
 import os
 
@@ -20,7 +19,7 @@ class File_Guesser(File_Guesser_Interface):
         self.config_root()
 
         if self.os == 'win32':
-            expected_file = self.root + os.path.join('System32', 'drivers', 'hosts')
+            expected_file = self.root + os.path.join('Windows', 'System32', 'drivers', 'etc', 'hosts')
         else:
             expected_file = self.root + os.path.join('etc', 'hosts')
 
@@ -35,14 +34,29 @@ class File_Guesser(File_Guesser_Interface):
         return self
 
 
+    def get_root_with_separator(self):
+        return self.root
+
+
+    def get_full_physical_path(self):
+        self.config_root()
+        self.config_www()
+        return self.root + os.path.join(self.www, self.hostname)
+
+
+    def get_welcome_index(self) -> str:
+        return os.path.join(self.get_full_physical_path(), 'index.html')
+        
+
     def guess_vhosts_configuration_path(self) -> str:
 
         self.config_root()
+        self.config_www()
 
         if self.os == 'win32':
-            virtual_host_file_path = self.root + os.path.join('wamp64', 'bin', 'apache', 'apache2.4.41', 'conf', 'extra', 'httpd-vhosts.conf')
+            virtual_host_file_path = self.root + os.path.join(self.base_vhost_app, 'bin', 'apache', 'apache2.4.41', 'conf', 'extra', 'httpd-vhosts.conf')
         elif self.os == 'darwin':
-            virtual_host_file_path = self.root + os.path.join('Applications', 'XAMPP', 'xamppfiles', 'etc', 'extra', 'httpd-vhosts.conf')
+            virtual_host_file_path = self.root + os.path.join(self.base_vhost_app, 'XAMPP', 'xamppfiles', 'etc', 'extra', 'httpd-vhosts.conf')
         else:
             raise Exception("Other operational systems than Windows or Mac still not implemented.")
 
@@ -50,6 +64,11 @@ class File_Guesser(File_Guesser_Interface):
             raise Exception("I do not have found the virtual host file on the system.")
 
         return virtual_host_file_path
+
+
+    def set_hostname(self, hostname):
+        self.hostname = hostname
+        return self
 
 
     def config_root(self):
@@ -60,8 +79,18 @@ class File_Guesser(File_Guesser_Interface):
             self.set_root_if_not_setted(os.sep)
 
 
-
     def set_root_if_not_setted(self, root: str):
         if not hasattr(self, 'root'):
             self.root = root
         return self
+
+
+    def config_www(self):
+        if self.os == 'win32':
+            self.base_vhost_app = 'wamp64'
+            self.www = os.path.join(self.base_vhost_app, 'www')
+        elif self.os == 'darwin':
+            self.base_vhost_app = 'Applications'
+            self.www = os.path.join(self.base_vhost_app, 'www')
+        else:
+            raise Exception("Still not working for other systems than Windows.")

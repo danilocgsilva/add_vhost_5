@@ -12,7 +12,7 @@ class VHost_Contents:
         return self
 
 
-    def get_host_file_entries(self):
+    def get_host_file_entries(self) -> str:
 
         vhost_entry = "\n127.0.0.1 " + self.hostname + "\n"
         vhost_entry += "::1 " + self.hostname
@@ -20,7 +20,7 @@ class VHost_Contents:
         return vhost_entry
 
 
-    def get_vhost_configurations(self):
+    def get_vhost_configurations(self) -> str:
 
         vhost_configuration_content = "\n" +\
             "<VirtualHost *:80>\n" +\
@@ -34,3 +34,7 @@ class VHost_Contents:
             "</VirtualHost>\n"
         
         return vhost_configuration_content
+
+
+    def get_welcome_html(self) -> str:
+        return 'Hello (world)! Welcome to the first sight of your virtual host ' + self.hostname

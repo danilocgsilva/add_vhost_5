@@ -65,11 +65,11 @@ class test_File_Guesser(unittest.TestCase):
 
     def test_get_correct_host_from_windows(self):
 
-        path_components = ['System32', 'drivers', 'hosts']
+        path_components = ['Windows', 'System32', 'drivers', 'etc', 'hosts']
         self.file_builder_helper.create_testing_file(path_components)
 
         base_path = self.file_builder_helper.get_base_testing_folder()
-        expected_path = os.path.join(base_path, path_components[0], path_components[1], path_components[2])
+        expected_path = os.path.join(base_path, path_components[0], path_components[1], path_components[2], path_components[3], path_components[4])
 
         self.file_guesser.set_os('win32')
         self.file_guesser.set_root(base_path)
@@ -141,6 +141,53 @@ class test_File_Guesser(unittest.TestCase):
 
         with self.assertRaises(Exception):
             self.file_guesser.guess_hosts_file()
+
+
+    def test_fluent_interface_set_os(self):
+        file_guesser = self.file_guesser.set_os('darwin')
+        self.assertTrue(isinstance(file_guesser, File_Guesser))
+
+    
+    def test_get_root_with_separator(self):
+        path = os.path.join('any', 'root', 'path')
+        self.file_guesser.set_root(path)
+        path_with_sep = self.file_guesser.get_root_with_separator()
+
+        self.assertEqual(path + os.sep, path_with_sep)
+
+
+    def test_get_full_physical_path_folder_windows(self):
+        my_host = 'testing_host_name'
+
+        expected_path = "C:" + os.sep + os.path.join('wamp64', 'www', my_host)
+
+        self.file_guesser.set_os('win32')
+        returned_www_path = self.file_guesser\
+            .set_hostname(my_host)\
+            .get_full_physical_path()
+        self.assertEqual(expected_path, returned_www_path)
+
+
+    def test_set_hostname_fluent_interface(self):
+        my_host = 'testing_host_name'
+        file_guesser = self.file_guesser.set_hostname(my_host)
+        self.assertTrue(isinstance(file_guesser, File_Guesser))
+        
+
+    def test_fail_get_full_physical_path_without_hostname(self):
+        self.file_guesser.set_os('win32')
+
+        with self.assertRaises(Exception):
+            self.file_guesser.get_full_physical_path()
+
+
+    def test_get_welcome_index_path_for_windows(self):
+        self.file_guesser.set_os('win32')
+        hostname = 'my_testing_hostname'
+        expected_path = "C:" + os.sep + os.path.join('wamp64', 'www', hostname, 'index.html')
+        self.file_guesser.set_hostname(hostname)
+        returned_index_path = self.file_guesser.get_welcome_index()
+        self.assertEqual(expected_path, returned_index_path)
         
 
 if __name__ == '__main__':

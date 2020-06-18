@@ -1,7 +1,8 @@
-import unittest
+import os
+import shutil
 import sys
 import tempfile
-import os
+import unittest
 sys.path.append("..")
 from add_vhost_5.File_Writter import File_Writter
 
@@ -10,10 +11,11 @@ class test_File_Writer(unittest.TestCase):
     def setUp(self):
         self.file_writter = File_Writter()
 
-
-    def test_if_halts_when_assign_not_existing_file(self):
+    
+    def test_if_halts_when_writting_to_non_existing_file(self):
+        self.file_writter.set_file_path("non_existing_file")
         with self.assertRaises(Exception):
-            self.file_writter.set_file_path("non_existing_file")
+            self.file_writter.write("Any content")
 
 
     def test_halts_when_tries_to_write_without_file_definition(self):
@@ -80,3 +82,30 @@ class test_File_Writer(unittest.TestCase):
         file.close()
 
         return len(content_list)
+
+
+    def test_new(self):
+
+        file_to_be_created = os.path.join(
+            tempfile.gettempdir(), 'just_created_file.txt'
+        )
+
+        self.file_writter.set_file_path(file_to_be_created).new()
+
+        self.assertTrue(os.path.isfile(file_to_be_created))
+
+
+    def test_new_long_folder_string(self):
+
+        just_created_file_base = os.path.join(tempfile.gettempdir(), 'just_created_file')
+
+        if os.path.exists(just_created_file_base):
+            shutil.rmtree(just_created_file_base, ignore_errors=False, onerror=None)
+
+        file_to_be_created = os.path.join(
+            just_created_file_base, 'little', 'longer', 'folder', 'path.txt'
+        )
+
+        self.file_writter.set_file_path(file_to_be_created).new()
+
+        self.assertTrue(os.path.isfile(file_to_be_created))

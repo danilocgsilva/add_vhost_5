@@ -1,15 +1,20 @@
 import os
 
 class File_Checker:
+
     def __init__(self, file: str = ""):
         if file is not "":
             self.file = file
 
+
     def set_file(self, file: str):
         self.file = file
+        return self
+
 
     def exists(self) -> bool:
         return os.path.isfile(self.file)
+
 
     def is_writable(self) -> bool:
         try:

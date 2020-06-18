@@ -67,3 +67,25 @@ class test_VHost_Contents(unittest.TestCase):
         configurations_getted = self.vhost_contents.get_vhost_configurations()
 
         self.assertEqual(expected_vhost_configuration, configurations_getted)
+
+
+    def test_dail_get_vhost_without_vhost_root_folder(self):
+        sample_vhost_name = "local.testing_vhost"
+
+        self.vhost_contents.set_hostname(sample_vhost_name)
+        with self.assertRaises(Exception):
+            self.vhost_contents.get_vhost_configurations()
+
+
+    def test_get_welcome_html(self):
+        hostname = 'my_vhost_name'
+        expected_message = 'Hello (world)! Welcome to the first sight of your virtual host ' + hostname
+        self.vhost_contents.set_hostname(hostname)
+        returned_message = self.vhost_contents.get_welcome_html()
+        self.assertEqual(expected_message, returned_message)
+
+    
+    def test_fail_if_get_welcome_without_hostname(self):
+        with self.assertRaises(Exception):
+            self.vhost_contents.get_welcome_html()
+        
