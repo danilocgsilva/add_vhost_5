@@ -1,3 +1,0 @@
-[console_scripts]
-avhost = add_vhost_5.__main__:main
-

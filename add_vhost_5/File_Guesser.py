@@ -41,8 +41,13 @@ class File_Guesser(File_Guesser_Interface):
 
         if self.os == 'win32':
             virtual_host_file_path = self.root + os.path.join('wamp64', 'bin', 'apache', 'apache2.4.41', 'conf', 'extra', 'httpd-vhosts.conf')
+        elif self.os == 'darwin':
+            virtual_host_file_path = self.root + os.path.join('Applications', 'XAMPP', 'xamppfiles', 'etc', 'extra', 'httpd-vhosts.conf')
         else:
-            raise Exception("Other operational systems than Windows still not implemented.")
+            raise Exception("Other operational systems than Windows or Mac still not implemented.")
+
+        if not os.path.isfile(virtual_host_file_path):
+            raise Exception("I do not have found the virtual host file on the system.")
 
         return virtual_host_file_path
 
