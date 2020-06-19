@@ -48,6 +48,7 @@ def main():
         )
 
     print("Finished! Restart your running webserver service. Access http://" + host_name)
+    print("You can find your virtualhost index in the " + welcome_index)
     
     
 def exit_if_not_writable(file_checker: File_Checker, file: str, message: str):

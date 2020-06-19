@@ -57,6 +57,8 @@ class File_Guesser(File_Guesser_Interface):
             virtual_host_file_path = self.root + os.path.join(self.base_vhost_app, 'bin', 'apache', 'apache2.4.41', 'conf', 'extra', 'httpd-vhosts.conf')
         elif self.os == 'darwin':
             virtual_host_file_path = self.root + os.path.join(self.base_vhost_app, 'XAMPP', 'xamppfiles', 'etc', 'extra', 'httpd-vhosts.conf')
+        elif self.os == 'linux':
+            virtual_host_file_path = os.sep + os.path.join('etc', 'httpd', 'conf', 'vhosts', 'myserver.conf')
         else:
             raise Exception("Other operational systems than Windows or Mac still not implemented.")
 
@@ -92,5 +94,8 @@ class File_Guesser(File_Guesser_Interface):
         elif self.os == 'darwin':
             self.base_vhost_app = 'Applications'
             self.www = os.path.join(self.base_vhost_app, 'www')
+        elif self.os == 'linux':
+            self.base_vhost_app = ''
+            self.www = ''
         else:
             raise Exception("Still not working for other systems than Windows.")
