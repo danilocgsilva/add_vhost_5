@@ -17,10 +17,11 @@ def main():
     host_file_path = file_guesser.guess_hosts_file()
     exit_if_not_writable(file_checker, host_file_path, "The hosts file " + host_file_path + " is not writable. Needs higher privileges to execute the action.")
 
-    vhost_configuration_file_path = file_guesser.guess_vhosts_configuration_path()
+    host_name = get_first_argument()
+
+    vhost_configuration_file_path = file_guesser.guess_vhosts_configuration_path(host_name)
     exit_if_not_writable(file_checker, vhost_configuration_file_path, "The virtual host file configuration " + vhost_configuration_file_path + " is not writable. Needs higher privileges to execute the action.")
 
-    host_name = get_first_argument()
     file_guesser.set_hostname(host_name)
 
     full_physical_www_path = file_guesser.get_full_physical_path()
@@ -55,6 +56,7 @@ def exit_if_not_writable(file_checker: File_Checker, file: str, message: str):
     if not file_checker.set_file(file).is_writable():
         print(message)
         exit()
+
 
 def first_argument_provided():
     try:

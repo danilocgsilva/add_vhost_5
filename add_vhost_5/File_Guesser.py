@@ -1,5 +1,7 @@
 from add_vhost_5.File_Guesser_Interface import File_Guesser_Interface
 from add_vhost_5.Os_Definition_Exception import Os_Definition_Exception
+from add_vhost_5.Linux_VHost_Guesser import Linux_VHost_Guesser
+from add_vhost_5.File_Writter import File_Writter
 import os
 
 class File_Guesser(File_Guesser_Interface):
@@ -48,7 +50,7 @@ class File_Guesser(File_Guesser_Interface):
         return os.path.join(self.get_full_physical_path(), 'index.html')
         
 
-    def guess_vhosts_configuration_path(self) -> str:
+    def guess_vhosts_configuration_path(self, hostname) -> str:
 
         self.config_root()
         self.config_www()
@@ -58,7 +60,8 @@ class File_Guesser(File_Guesser_Interface):
         elif self.os == 'darwin':
             virtual_host_file_path = self.root + os.path.join(self.base_vhost_app, 'XAMPP', 'xamppfiles', 'etc', 'extra', 'httpd-vhosts.conf')
         elif self.os == 'linux':
-            virtual_host_file_path = os.sep + os.path.join('etc', 'httpd', 'conf', 'vhosts', 'myserver.conf')
+            virtual_host_file_path = Linux_VHost_Guesser().guess_vhost_configuration(hostname)
+            File_Writter().set_file_path(virtual_host_file_path).new()
         else:
             raise Exception("Other operational systems than Windows or Mac still not implemented.")
 
