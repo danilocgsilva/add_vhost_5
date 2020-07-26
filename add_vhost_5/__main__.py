@@ -2,6 +2,7 @@ from add_vhost_5.File_Checker import File_Checker
 from add_vhost_5.File_Guesser import File_Guesser
 from add_vhost_5.File_Writter import File_Writter
 from add_vhost_5.VHost_Contents import VHost_Contents
+from add_vhost_5.Environment import Environment
 from sys import platform
 import sys
 
@@ -47,9 +48,13 @@ def main():
         .write(
             file_contents.get_welcome_html()
         )
-
+   
     print("Finished! Restart your running webserver service. Access http://" + host_name)
     print("You can find your virtualhost index in the " + welcome_index)
+
+    environment = Environment()
+    if not environment.restart_webserver():
+        print("I could not restart the environment, sorry. You need to do it manually.")
     
     
 def exit_if_not_writable(file_checker: File_Checker, file: str, message: str):
