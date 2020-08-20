@@ -15,6 +15,12 @@ sudo pip install .
 sudo avhost my_localhost
 ```
 
+There are a command available to check the environment and if it can complete all tasks to create a new virtual host:
+
+```
+sudo avhostcheck
+```
+
 ## Works with:
 
 * Ubuntu, and supposedly all Debian like linux flavors. Considers only using Apache2 as webserver, Nginx still not supported.

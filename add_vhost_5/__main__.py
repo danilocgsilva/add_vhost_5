@@ -15,13 +15,13 @@ def avhost():
 
     file_guesser = File_Guesser().set_os(platform)
     file_checker = File_Checker()
-    steps_cheker = Steps_Checker()
+    steps_checker = Steps_Checker()
 
-    results = steps_cheker.check_host(platform)
-    if not results["status"] == "Ok":
-        if results["status"] == "Partial":
+    results_host = steps_checker.check_host(platform)
+    if not results_host["status"] == "Ok":
+        if results_host["status"] == "Partial":
             print("The host file has been found, but is not writable. Try to run the script with elevated privileges over hosts files.")
-        elif results["status"] == "Problem":
+        elif results_host["status"] == "Problem":
             print("The host file has not been found in the system.")
         else:
             raise Exception("I did not understood the Steps_Checker response. Sorry.")
@@ -29,8 +29,12 @@ def avhost():
 
     host_name = get_first_argument()
 
-    vhost_configuration_file_path = file_guesser.guess_vhosts_configuration_path(host_name)
-    exit_if_not_writable(file_checker, vhost_configuration_file_path, "The virtual host file configuration " + vhost_configuration_file_path + " is not writable. Needs higher privileges to execute the action.")
+    results_vhost_confs = steps_checker.check_configuration_file(host_name)
+
+    # vhost_configuration_file_path = file_guesser.guess_vhosts_configuration_path(host_name)
+    # exit_if_not_writable(file_checker, vhost_configuration_file_path, "The virtual host file configuration " + vhost_configuration_file_path + " is not writable. Needs higher privileges to execute the action.")
+
+    vhost_configuration_file_path = steps_checker.get_vhost_configuration_file_path()
 
     file_guesser.set_hostname(host_name)
 
@@ -67,16 +71,26 @@ def avhost():
 
 
 def avhostcheck():
-    steps_cheker = Steps_Checker()
-    results = steps_cheker.check_host()
-    if results["status"] == "Ok":
+    steps_checker = Steps_Checker()
+    error_message_steps_checker = "Do not understood the Steps_Checker response result. Sorry."
+
+    results_host = steps_checker.check_host(platform)
+    if results_host["status"] == "Ok":
         print("The host file has been found and is writable by the system.")
-    elif results["status"] == "Partial":
+    elif results_host["status"] == "Partial":
         print("The host file has been found, but have no permissions to write in. Tries to use an user with elevated privileges.")
-    elif results["status"] == "Problem":
+    elif results_host["status"] == "Problem":
         print("I have not found the hosts file in the system.")
     else:
-        raise Exception("Do not understood the Steps_Checker response result. Sorry.")
+        raise Exception(error_message_steps_checker)
+
+    results_configuration_file = steps_checker.check_configuration_file("mock_host")
+    if results_configuration_file["status"] == "Ok":
+        print("The configuration file could be guessed.")
+    elif results_configuration_file["status"] == "Problem":
+        print("The configuration file could not be guessed due to error: " + results_configuration_file["message"])
+    else:
+        raise Exception(error_message_steps_checker)
 
 
 def first_argument_provided():
