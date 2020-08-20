@@ -50,7 +50,7 @@ class File_Guesser(File_Guesser_Interface):
         return os.path.join(self.get_full_physical_path(), 'index.html')
         
 
-    def guess_vhosts_configuration_path(self, hostname) -> str:
+    def guess_vhosts_configuration_path(self, hostname = None) -> str:
 
         self.config_root()
         self.config_www()

@@ -1,6 +1,6 @@
 from setuptools import setup
 
-VERSION = '1.0.0'
+VERSION = '1.0.1'
 
 def readme():
     with open("README.md") as f:
@@ -17,6 +17,9 @@ setup(
     author="Danilo Silva",
     author_email="contact@danilocgsilva.me",
     packages=["add_vhost_5"],
-    entry_points={"console_scripts": ["avhost=add_vhost_5.__main__:main"],},
+    entry_points={"console_scripts": [
+        "avhost=add_vhost_5.__main__:avhost",
+        "avhostcheck=add_vhost_5.__main__:avhostcheck"
+    ],},
     include_package_data=True
 )
